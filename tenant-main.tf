@@ -31,7 +31,7 @@ resource "aws_vpc" "tenant_vpc" {
 }
 
 # this is not part of cloudformation template, for demo purpose only
-resource "aws_subnet" "tenant_public_subnet" {
+resource "aws_subnet" "tenant_public_subnet"{
   vpc_id     = aws_vpc.tenant_vpc.id
   cidr_block = "10.0.0.0/24"
 
