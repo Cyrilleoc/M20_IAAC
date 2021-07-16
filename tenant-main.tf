@@ -33,7 +33,7 @@ resource "aws_vpc" "tenant_vpc" {
 # this is not part of cloudformation template, for demo purpose only
 resource "aws_subnet" "tenant_public_subnet"{
   vpc_id     = aws_vpc.tenant_vpc.id
-  cidr_block = "10.0.0.0/24"
+  cidr_block = "10.0.1.0/24"
 
   map_public_ip_on_launch = true // it makes this a public subnet
   availability_zone = "us-east-1a"
