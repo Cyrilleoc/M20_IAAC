@@ -1,16 +1,3 @@
-terraform {
-  required_providers {
-    aws = {
-      source  = "hashicorp/aws"
-      version = "~> 3.27"
-    }
-  }
-}
-
-provider "aws" {
-  profile = "default"
-  region  = "us-east-1"
-}
 
 resource "aws_vpc" "tenant_vpc" {
   cidr_block       = var.tenant_cidr # !Ref pTenantCIDR
@@ -19,13 +6,7 @@ resource "aws_vpc" "tenant_vpc" {
   enable_dns_hostnames = true
 
   tags = {
-    # Value: !Join
-    #     - ' '
-    #     - - !Ref pTenantVPCName   tn-vpc
-    #     - !Ref pTenantVPCEnvironment  dev
-    #     - 'Tenant VPC'
     Name = join(" ", [var.tenant_vpc_name, var.tenant_vpc_environment, "Tenant VPC"])
-    # !Ref pTenantVPCEnvironment
     Environment = var.tenant_vpc_environment
   }
 }
@@ -50,22 +31,40 @@ resource "aws_route_table" "tenant_route_table" {
     # VpcPeeringConnectionId: !Ref rVPCPeeringConnection
 
   # routes not defined as there is transit account is not provisioned yet
-  route = []
+  # route = []
+
+  # route {
+  #   cidr_block = "10.0.1.0/24"
+  #   gateway_id = aws_internet_gateway.example.id
+  # }
 
 
   tags = {
-    # Value: !Join
-    #     - ' '
-    #     - - !Ref pTenantVPCName
-    #     - !Ref pTenantVPCEnvironment
-    #     - 'Tenant VPC Route Table'
     Name = join(" ", [var.tenant_vpc_name, var.tenant_vpc_environment, "Tenant VPC Route Table"])
   }
+}
+
+resource "aws_vpc_peering_connection" "vpc_peering_connection" {
+  peer_owner_id = var.peer_vpc_account_id
+  peer_vpc_id   = var.peer_vpc_id
+  vpc_id        = aws_vpc.tenant_vpc.id
 }
 
 resource "aws_vpc_endpoint" "tenant_vpc_endpoint" {
   vpc_id       = aws_vpc.tenant_vpc.id
   route_table_ids = [aws_route_table.tenant_route_table.id]
+
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Action = "*"
+        Effect = "Allow"
+        Principal = "*"
+        Resource = "*"
+      },
+    ]
+  })
 
     # ServiceName: !Join
     #     - ''
@@ -75,4 +74,126 @@ resource "aws_vpc_endpoint" "tenant_vpc_endpoint" {
   service_name = "com.amazonaws.us-east-1.s3"
 
 }
+
+#### FLOW LOG ######
+
+resource "aws_iam_role" "tenant_vpc_flow_logs_service_role" {
+  # name = "test_role"
+
+  # Terraform's "jsonencode" function converts a
+  # Terraform expression result to valid JSON syntax.
+  assume_role_policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Action = "sts:AssumeRole"
+        Effect = "Allow"
+        Sid    = "AllowFlowLogs"
+        Principal = {
+          #VPC Flow Logs uses the same URL suffix in all regions
+          Service = "vpc-flow-logs.amazonaws.com"
+        }
+      },
+    ]
+  })
+  path = "/"
+  inline_policy {
+    name   = "cloudwatchlogsrole"
+      policy = <<EOF
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Action": [
+        "logs:CreateLogGroup",
+        "logs:CreateLogStream",
+        "logs:PutLogEvents",
+        "logs:DescribeLogGroups",
+        "logs:DescribeLogStreams"
+      ],
+      "Resource": "*"
+    }
+  ]
+}
+EOF
+  }
+}
+
+resource "aws_cloudwatch_log_group" "tenant_vpc_log_group" {
+  name = "tenant_vpc_log_group"
+}
+
+resource "aws_flow_log" "tenant_vpc_flowlog" {
+  iam_role_arn    = aws_iam_role.tenant_vpc_flow_logs_service_role.arn
+  log_destination = aws_cloudwatch_log_group.tenant_vpc_log_group.arn # not sure about this
+  traffic_type    = "ALL"
+  vpc_id          = aws_vpc.tenant_vpc.id
+}
+
+
+#### S3 BUCKET ######
+resource "aws_s3_bucket" "lambda_tenant_bucket" {
+  bucket = var.tenant_bucket_name
+}
+
+resource "aws_s3_bucket_notification" "lambda_tenant_bucket_notification" {
+  bucket = aws_s3_bucket.lambda_tenant_bucket.id
+
+  lambda_function {
+    lambda_function_arn = aws_lambda_function.lambda_move_pub_keys.arn
+    events              = ["s3:ObjectCreated:*", "s3:ObjectRemoved:*"]
+    filter_suffix       = ".pub"
+  }
+
+  depends_on = [aws_lambda_permission.lambda_processing_permission]
+}
+
+#### LAMBDA ######
+
+resource "aws_lambda_permission" "lambda_processing_permission" {
+  action        = "lambda:InvokeFunction"
+  function_name = aws_lambda_function.lambda_move_pub_keys.function_name
+  principal     = "s3.amazonaws.com"
+  source_arn    = "arn:${local.region_partition}:s3:::${var.tenant_bucket_name}"
+  source_account = local.caller_account_id
+}
+
+resource "aws_iam_role" "lambda_move_pub_keys_role" {
+  name = "LambdaMovePubKeysRole"
+  max_session_duration = "4600"
+
+  # Terraform's "jsonencode" function converts a
+  # Terraform expression result to valid JSON syntax.
+  assume_role_policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Action = "sts:AssumeRole"
+        Effect = "Allow"
+        Principal = {
+          Service = "lambda.${local.region_root_url}"
+        }
+      },
+    ]
+  })
+  managed_policy_arns = ["arn:${local.region_partition}:iam::${local.caller_account_id}:policy/LambdaMovePubKeysPolicy"]
+  # ManagedPolicyArns:
+  # - !Sub 'arn:${RegionPartition}:iam::${AWS::AccountId}:policy/LambdaMovePubKeysPolicy'
+}
+
+resource "aws_lambda_function" "lambda_move_pub_keys" {
+  description = "Manages Public Keys For BastionHost"
+  function_name = "lambdaMovePublicKeys"
+  role          = aws_iam_role.lambda_move_pub_keys_role.arn
+  handler       = "move_bastion_keys.lambda_handler"
+
+  s3_bucket = var.template_origin_bucket
+  s3_key = var.lambda_key
+
+  runtime = "python3.7"
+  timeout = 300
+}
+
+
 

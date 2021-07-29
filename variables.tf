@@ -1,10 +1,10 @@
-variable "tempate_origin_bucket" {
+variable "template_origin_bucket" {
     type = string
     default = "sidewinder-testing"
     description = "Origin Bucket for Tenant VPC Template(s)"
 }
 
-variable "tempate_origin_prefix" {
+variable "template_origin_prefix" {
     type = string
     default = "resources"
     description = "Origin Prefix for Tenant VPC Template(s)"
@@ -143,7 +143,7 @@ EOT
 
 variable "tenant_bucket_name" {
     type = string
-    default = ""
+    default = "tenant-bucket-test"
     description = "Bucket name of Tenant Public Keys Bucket"
 }
 
