@@ -161,7 +161,7 @@ variable "lambda_move_pub_keys_role" {
 
 variable "lambda_key" {
     type = string
-    default = ":default"
+    default = "move_bastion_keys.zip"
     description = "Object key of lambda function in deployment bucket"
 }
 
