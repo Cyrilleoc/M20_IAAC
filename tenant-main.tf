@@ -78,10 +78,6 @@ resource "aws_vpc_endpoint" "tenant_vpc_endpoint" {
 #### FLOW LOG ######
 
 resource "aws_iam_role" "tenant_vpc_flow_logs_service_role" {
-  # name = "test_role"
-
-  # Terraform's "jsonencode" function converts a
-  # Terraform expression result to valid JSON syntax.
   assume_role_policy = jsonencode({
     Version = "2012-10-17"
     Statement = [
@@ -99,24 +95,22 @@ resource "aws_iam_role" "tenant_vpc_flow_logs_service_role" {
   path = "/"
   inline_policy {
     name   = "cloudwatchlogsrole"
-      policy = <<EOF
-{
-  "Version": "2012-10-17",
-  "Statement": [
-    {
-      "Effect": "Allow",
-      "Action": [
-        "logs:CreateLogGroup",
-        "logs:CreateLogStream",
-        "logs:PutLogEvents",
-        "logs:DescribeLogGroups",
-        "logs:DescribeLogStreams"
-      ],
-      "Resource": "*"
-    }
-  ]
-}
-EOF
+    policy = jsonencode({
+      Version = "2012-10-17"
+      Statement = [
+        {
+          "Effect": "Allow",
+          "Action": [
+            "logs:CreateLogGroup",
+            "logs:CreateLogStream",
+            "logs:PutLogEvents",
+            "logs:DescribeLogGroups",
+            "logs:DescribeLogStreams"
+          ],
+          "Resource": "*"
+        }
+      ]
+    })
   }
 }
 

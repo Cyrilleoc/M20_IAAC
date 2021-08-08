@@ -161,9 +161,53 @@ variable "lambda_move_pub_keys_role" {
 
 variable "lambda_key" {
     type = string
-    default = "move_bastion_keys.zip"
+    default = ":default"
     description = "Object key of lambda function in deployment bucket"
 }
 
+# Tenant Logging variables here
 
+# variable "notify_email" {
+#     type = string
+#     default = ""
+#     description = "Notification email for Logging events"
+# }
 
+# variable "logs_bucket" {
+#     type = string
+#     default = ""
+#     description = "S3 bucket name for archive, audit, and log storage"
+# }
+
+# variable "cloudtrail_to_cloudwatch_logs" {
+#     type = bool
+#     default = true
+#     description = "True if a CloudWatch Logs log group was manually created for CloudTrail Logs to be sent to CloudWatch Logs in this account"
+# }
+
+# variable "cloudtrail_log_group" {
+#     type = string
+#     default = "cloudtrail"
+#     description = "Name of CloudWatch Logs log group local destination for CloudTrail Logs"
+# }
+
+variable "elb_principle" {
+    type = string
+    default = "048591011584"
+    description = "Static ELB Account for ELB Access Logs Delivery"
+}
+
+variable "transit_account_id" {
+    type = string
+    default = "123456789012"
+    description = "12 Digit Account ID of the Transit Account"
+}
+
+    # RegionURL:
+    #     Description: Region Specific URL Root
+    #     Default: amazonaws.com
+    #     Type: String
+    # RegionPartition:
+    #     Description: Region Specific Partition
+    #     Default: aws-us-gov
+    #     Type: String
