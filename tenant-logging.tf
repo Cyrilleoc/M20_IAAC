@@ -40,9 +40,9 @@ resource "aws_iam_role" "transit_config_role" {
 }
 
 resource "aws_iam_role" "cloudwatch_logs_role" {
-    # revist this condition
-#   count = var.cloudtrail_to_cloudwatch_logs ? 1 : 0
-  
+  # revist this condition
+  #   count = var.cloudtrail_to_cloudwatch_logs ? 1 : 0
+
   assume_role_policy = jsonencode({
     Version = "2012-10-17"
     Statement = [
@@ -68,7 +68,7 @@ resource "aws_iam_role" "cloudwatch_logs_role" {
           Resource = "arn:${local.region_partition}:logs:${local.caller_aws_region}:${local.caller_account_id}:log-group:${var.cloudtrail_log_group}:log-stream:*"
         },
         {
-          Sid      = "AWSCloudTrailPutLogEvents20141101"  
+          Sid      = "AWSCloudTrailPutLogEvents20141101"
           Action   = "logs:PutLogEvents"
           Effect   = "Allow"
           Resource = "arn:${local.region_partition}:logs:${local.caller_aws_region}:${local.caller_account_id}:log-group:${var.cloudtrail_log_group}:log-stream:*"
@@ -79,7 +79,7 @@ resource "aws_iam_role" "cloudwatch_logs_role" {
 }
 
 resource "aws_cloudtrail" "cloudtrail_logging_local" {
-  count                         = var.cloudtrail_to_cloudwatch_logs ? 0 : 1
+  #   count                         = var.cloudtrail_to_cloudwatch_logs ? 0 : 1
   name                          = "cloudtrail_logging_local"
   s3_bucket_name                = var.logs_bucket
   s3_key_prefix                 = "cloudtrail"
@@ -91,7 +91,7 @@ resource "aws_cloudtrail" "cloudtrail_logging_local" {
 
 
 resource "aws_cloudtrail" "cloudtrail_logging_dual" {
-  count                         = var.cloudtrail_to_cloudwatch_logs ? 1 : 0   
+  # count                         = var.cloudtrail_to_cloudwatch_logs ? 1 : 0
   name                          = "cloudtrail_logging_dual"
   s3_bucket_name                = var.logs_bucket
   s3_key_prefix                 = "cloudtrail"

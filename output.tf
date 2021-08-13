@@ -5,3 +5,7 @@ output "tenant_vpc" {
 output "tenant_vpc_cidrblock" {
     value = aws_vpc.tenant_vpc.cidr_block
 }
+
+output "logs_bucket" {
+    value = var.logs_bucket
+}
