@@ -1313,7 +1313,7 @@ resource "aws_iam_policy" "proj_admin_policy" {
     Version = "2012-10-17"
     Statement = [
       {
-        "Effect" = "Action",
+        "Effect" = "Allow",
         "Sid"    = "ProjAdminGenAccess",
         "Action" = [
           "autoscaling:*",
@@ -1762,7 +1762,7 @@ resource "aws_iam_policy" "dev_admin_policy" {
   })
 }
 
-resource "aws_iam_policy" "proj_admin_policy" {
+resource "aws_iam_policy" "proj_admin_limited_policy" {
   name        = "ProjAdminLimitedPolicy"
   description = "Managed policy for ProjAdminlimitedRole permissions."
   policy = jsonencode({
@@ -3768,7 +3768,3 @@ resource "aws_iam_policy" "ato_role_creator_policy" {
     ]
   })
 }
-
-
-
-
