@@ -2397,6 +2397,166 @@ resource "aws_iam_policy" "s3_only_policy" {
   })
 }
 
+resource "aws_iam_policy" "key_manager_policy" {
+  name        = "KeyManagerPolicy"
+  description = "Managed policy for KeyManagerPolicy permissions."
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        "Effect" = "Allow",
+        "Sid"    = "KeyManager",
+        "Action" = [
+          "autoscaling:Describe*",
+          "aws-portal:View*",
+          "budgets:ViewBudget",
+          "config:Describe*",
+          "config:Get*",
+          "config:List*",
+          "cloudformation:Describe*",
+          "cloudformation:EstimateTemplateCost",
+          "cloudformation:Get*",
+          "cloudformation:List*",
+          "cloudformation:PreviewStackUpdate",
+          "cloudformation:ValidateTemplate",
+          "cloudhsm:Describe*",
+          "cloudhsm:Get*",
+          "cloudhsm:List*",
+          "cloudtrail:Describe*",
+          "cloudtrail:Get*",
+          "cloudtrail:Lookup*",
+          "cloudwatch:Describe*",
+          "cloudwatch:Get*",
+          "cloudwatch:List*",
+          "logs:Describe*",
+          "logs:Get*",
+          "logs:Test*",
+          "datapipeline:Describe*",
+          "datapipeline:List*",
+          "directconnect:Describe*",
+          "dynamodb:ListTables",
+          "dynamodb:DescribeTable",
+          "ec2:Describe*",
+          "ec2:GetConsoleOutput",
+          "elasticache:Describe*",
+          "elasticache:List*",
+          "elasticloadbalancing:Describe*",
+          "elasticmapreduce:Describe*",
+          "elasticmapreduce:List*",
+          "glacier:Describe*",
+          "glacier:Get*",
+          "glacier:List*",
+          "iam:GenerateCredentialReport",
+          "iam:Get*",
+          "iam:List*",
+          "kinesis:Describe*",
+          "kinesis:List*",
+          "kms:CancelKeyDeletion",
+          "kms:CreateAlias",
+          "kms:CreateKey",
+          "kms:CreateGrant",
+          "kms:DeleteAlias",
+          "kms:Describe*",
+          "kms:Disable*",
+          "kms:Enable*",
+          "kms:Get*",
+          "kms:List*",
+          "kms:Put*",
+          "kms:RevokeGrant",
+          "kms:Update*",
+          "aws-marketplace:View*",
+          "rds:Describe*",
+          "rds:List*",
+          "redshift:Describe*",
+          "redshift:List*",
+          "s3:GetBucket*",
+          "s3:GetLifecycle*",
+          "s3:GetObjectAcl",
+          "s3:GetObjectVersionAcl",
+          "s3:List*",
+          "sns:Get*",
+          "sns:List*",
+          "sqs:Get*",
+          "sqs:List*",
+          "snowball:Describe*",
+          "snowball:Get*",
+          "snowball:List*",
+          "sts:DecodeAuthorizationMessage",
+          "support:*",
+          "swf:Count*",
+          "swf:Describe*",
+          "swf:Get*",
+          "swf:List*"
+        ],
+        "Resource" = "*"
+      },
+      {
+        "Effect" = "Allow",
+        "Sid"    = "KeyManagerS3ReadAccess",
+        "Action" = [
+          "s3:Get*",
+          "s3:List*"
+        ],
+        "Resource" = [
+          "arn:${local.region_partition}:s3:::*billing*",
+          "arn:${local.region_partition}:s3:::*billing*/*"
+        ]
+      },
+      {
+        "Effect" = "Allow",
+        "Sid"    = "KeyManagerTrustAdvisorCostAccess",
+        "Action" = [
+          "trustedadvisor:Exclude*",
+          "trustedadvisor:Include*",
+          "trustedadvisor:Refresh*",
+          "trustedadvisor:Describe*"
+        ],
+        "Resource" = [
+          "arn:${local.region_partition}:trustedadvisor:*:*:checks/cost_optimizing/*"
+        ]
+      },
+      {
+        "Effect" = "Allow",
+        "Sid"    = "KeyManagerTrustedAdvisorChecksAccess",
+        "Action" = [
+          "trustedadvisor:Exclude*",
+          "trustedadvisor:Include*",
+          "trustedadvisor:Refresh*",
+          "trustedadvisor:Describe*"
+        ],
+        "Resource" = [
+          "arn:${local.region_partition}:trustedadvisor:*:*:checks/performance/*"
+        ]
+      },
+      {
+        "Effect" = "Allow",
+        "Sid"    = "KeyManagerTrustedAdvisorFoultToleranceAccess",
+        "Action" = [
+          "trustedadvisor:Exclude*",
+          "trustedadvisor:Include*",
+          "trustedadvisor:Refresh*",
+          "trustedadvisor:Describe*"
+        ],
+        "Resource" = [
+          "arn:${local.region_partition}:trustedadvisor:*:*:checks/fault_tolerance/*"
+        ]
+      },
+      {
+        "Effect" = "Deny",
+        "Sid"    = "KeyManagerKMSDenyPartial",
+        "Action" = [
+          "kms:ScheduleKeyDeletion",
+          "kms:Decrypt*",
+          "kms:Encrypt*",
+          "kms:Generate*",
+          "kms:ReEncrypt*"
+        ],
+        "Resource" = "*"
+      },
+    ]
+  })
+}
+
 resource "aws_iam_policy" "emr_service_policy" {
   name        = "EMRServicePolicy"
   description = "Managed policy for EMRServiceRole permissions."
