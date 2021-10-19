@@ -16,7 +16,7 @@ resource "aws_iam_role" "payer_config_role" {
 
   inline_policy {
     name   = "config-s3-delivery"
-    policy = data.aws_iam_policy_document.payer_config_role_inline_policy
+    policy = data.aws_iam_policy_document.payer_config_role_inline_policy.json
   }
 }
 
@@ -38,7 +38,7 @@ resource "aws_iam_role" "cloudwatch_logs_role" {
 
   inline_policy {
     name   = "cloudwatchlogsrole"
-    policy = data.aws_iam_policy_document.cloudwatch_logs_role_inline_policy
+    policy = data.aws_iam_policy_document.cloudwatch_logs_role_inline_policy.json
   }
 }
 
@@ -63,5 +63,5 @@ resource "aws_cloudtrail" "cloudtrail_logging_dual" {
   include_global_service_events = true
   is_multi_region_trail         = true
   cloud_watch_logs_group_arn    = "arn:${local.region_partition}:logs:${local.caller_aws_region}:${local.caller_account_id}:log-group:${var.cloudtrail_log_group}:*"
-  cloud_watch_logs_role_arn     = aws_iam_role.cloudwatch_logs_role.arn
+  cloud_watch_logs_role_arn     = aws_iam_role.cloudwatch_logs_role[0].arn
 }

@@ -33,11 +33,7 @@ variable "billing_bucket" {
   validation {
     # regex(...) fails if it cannot find a match
     condition     = can(regex("^[0-9a-zA-Z]+([0-9a-zA-Z-.]*[0-9a-zA-Z])*$", var.billing_bucket))
-    error_message = <<EOT
-A bucket name can include numbers, lowercase
-letters, uppercase letters, periods (.), and hyphens (-). It cannot start or
-end with a hyphen (-).
-EOT
+    error_message = "Invalid bucket name."
   }
 }
 
@@ -45,4 +41,10 @@ variable "billing_principal" {
   type        = string
   default     = "386209384616"
   description = "Domain specific principal for billing report delivery"
+}
+
+variable "cap_account" {
+  type        = string
+  default     = "593664963477" # Adding Pro_User account ID for now
+  description = "Account number for CAP federation"
 }

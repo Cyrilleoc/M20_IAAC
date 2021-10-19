@@ -10,7 +10,7 @@ data "aws_iam_policy_document" "cap_account_policy" {
 
     principals {
       type        = "Principal"
-      identifiers = ["arn:${local.region_partition}:iam::${local.cap_account}:root"]
+      identifiers = ["arn:${local.region_partition}:iam::${var.cap_account}:root"]
     }
   }
 }
