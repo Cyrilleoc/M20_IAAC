@@ -16,7 +16,7 @@ module "tenant" {
 # }
 
 # Call Payer module
-# module "payer" {
-#   source = "./modules/payer"
-#   billing_bucket = "payeraccount1"
-# }
+module "payer" {
+  source = "./modules/payer"
+  billing_bucket = "payeraccount1"
+}
