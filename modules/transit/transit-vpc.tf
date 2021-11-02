@@ -85,7 +85,6 @@ resource "aws_security_group" "security_group_bastion" {
   }
 }
 
-
 resource "aws_security_group" "security_group_proxy_instance" {
   description = "Allow Proxy and SSH Traffic from ELB/Bastion to Instance(s)"
   depends_on = [
@@ -149,7 +148,7 @@ resource "aws_subnet" "transit_dmz_subnet_B" {
   cidr_block        = var.transit_dmz_subnet_B_cidr
   availability_zone = var.region_az2_name
   tags = {
-    Name = "Transit DMZ Subnet A"
+    Name = "Transit DMZ Subnet B"
   }
 }
 
@@ -191,17 +190,6 @@ resource "aws_route_table" "transit_private_route_table" {
 
 resource "aws_route_table" "transit_dmz_route_table" {
   vpc_id = aws_vpc.transit_vpc.id
-
-  route = [
-    {
-      cidr_block = "10.0.1.0/24"
-      gateway_id = aws_internet_gateway.example.id
-    },
-    {
-      ipv6_cidr_block        = "::/0"
-      egress_only_gateway_id = aws_egress_only_internet_gateway.example.id
-    }
-  ]
 
   tags = {
     Name        = "Transit DMZ Route"
