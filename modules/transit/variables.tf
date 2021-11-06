@@ -51,7 +51,7 @@ variable "cap_account" {
 
 variable "master_payer_account_id" {
   type        = string
-  default     = "123456789012"
+  default     = "593664963477" # Adding Pro_User account ID for now
   description = "12 Digit Account ID of the Master Payer Account"
 }
 
@@ -59,5 +59,11 @@ variable "tenant_account_id" {
   type        = string
   default     = "123456789012"
   description = "12 Digit Account ID of the Tenant Account"
+}
+
+variable "elb_principle" {
+  type        = string
+  default     = "593664963477" # Adding Pro_User account ID for now
+  description = "Static ELB Account for ELB Access Logs Delivery"
 }
 

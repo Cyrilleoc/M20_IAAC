@@ -58,3 +58,76 @@ variable "region_az2_name" {
   description = "Availability Zone 2 Name in Region"
 }
 
+variable "config_bucket" {
+  type        = string
+  default     = "configbucket"
+  description = "S3 bucket name for bastion and proxy configuration files"
+}
+
+variable "bastion_ami" {
+  type        = string
+  default     = "ami-8c1be5f6"
+  description = "AMI to use for bastion host"
+}
+
+variable "proxy_ami" {
+  type        = string
+  default     = "ami-8c1be5f6"
+  description = "AMI to use for proxy host(s)"
+}
+
+variable "bastion_key_pair" {
+  type        = string
+  default     = ""
+  description = "Name of existing EC2 key pair for BASTION host"
+}
+
+variable "proxy_key_pair" {
+  type        = string
+  default     = ""
+  description = "Name of existing EC2 key pair for proxy hosts"
+}
+
+variable "bastion_instance_type" {
+  type        = string
+  default     = "t2.small"
+  description = "Bastion EC2 instance type"
+}
+
+variable "proxy_instance_type" {
+  type        = string
+  default     = "t2.small"
+  description = "The instance type for the proxy host"
+}
+
+variable "bastion_auto_scale_min" {
+  type        = number
+  default     = 1
+  description = "The lower bound for autoscaling your Bastion fleet"
+}
+
+variable "bastion_auto_scale_max" {
+  type        = number
+  default     = 1
+  description = "The upper bound for autoscaling your Bastion fleet"
+}
+
+variable "proxy_auto_scale_min" {
+  type        = number
+  default     = 1
+  description = "The lower bound for autoscaling your Proxy fleet"
+}
+
+variable "proxy_auto_scale_max" {
+  type        = number
+  default     = 1
+  description = "The upper bound for autoscaling your Proxy fleet"
+}
+
+variable "tenant_account_id" {
+  type        = string
+  default     = "593664963477" # Adding Pro_User account ID for now
+  description = "12 Digit Account ID of the Tenant Account"
+}
+
+

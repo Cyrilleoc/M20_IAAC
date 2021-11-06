@@ -35,7 +35,7 @@ data "aws_iam_policy_document" "transit_logs_bucket_inline_policy" {
     resources = ["arn:${local.region_partition}:s3:::${var.logs_bucket}/ElbAccessLogs/AWSLogs/${local.caller_account_id}/*"]
     principals {
       type        = "AWS"
-      identifiers = ["arn:${local.region_partition}:iam::${ELBPrincipal}:root"]
+      identifiers = ["arn:${local.region_partition}:iam::${var.elb_principle}:root"]
     }
   }
 
@@ -86,7 +86,7 @@ data "aws_iam_policy_document" "transit_logs_bucket_inline_policy" {
     effect  = "Allow"
     actions = ["s3:PutObject"]
     resources = [
-      "arn:${local.region_partition}:s3:::${var.logs_bucket}/config/AWSLogs/${local.master_payer_account_id}/Config/*",
+      "arn:${local.region_partition}:s3:::${var.logs_bucket}/config/AWSLogs/${var.master_payer_account_id}/Config/*",
       "arn:${local.region_partition}:s3:::${var.logs_bucket}/config/AWSLogs/${var.tenant_account_id}/Config/*"
     ]
     principals {
@@ -115,5 +115,56 @@ data "aws_iam_policy_document" "cloudwatch_logs_role_inline_policy" {
     actions   = ["logs:PutLogEvents"]
     resources = ["arn:${local.region_partition}:logs:${local.caller_aws_region}:${local.caller_account_id}:log-group:${var.cloudtrail_log_group}:log-stream:*"]
   }
+}
+
+data "aws_iam_policy_document" "bastion_role_inline_policy" {
+  statement {
+    effect = "Allow"
+    actions = [
+      "ec2:DescribeAddresses",
+      "ec2:AssociateAddress",
+      "ec2:DisassociateAddress"
+    ]
+    resources = ["*"]
+  }
+
+  statement {
+    effect = "Allow"
+    actions = [
+      "s3:PutObject",
+      "s3:PutObjectAcl"
+    ]
+    resources = ["arn:${local.region_partition}:s3:::${var.logs_bucket}/bastion-access-logs/*"]
+  }
+
+  statement {
+    effect = "Allow"
+    actions = [
+      "s3:GetObject"
+    ]
+    resources = ["arn:${local.region_partition}:s3:::${var.logs_bucket}/public-keys/*"]
+  }
+
+  statement {
+    effect = "Allow"
+    actions = [
+      "s3:ListBucket"
+    ]
+    resources = ["arn:${local.region_partition}:s3:::${var.logs_bucket}"]
+    condition {
+      test     = "StringEquals"
+      variable = "s3:prefix"
+      values   = ["public-keys/"]
+    }
+  }
+
+  statement {
+    effect = "Allow"
+    actions = [
+      "s3:GetObject"
+    ]
+    resources = ["arn:${local.region_partition}:s3:::${var.config_bucket}/*"]
+  }
+
 }
 
