@@ -7,26 +7,27 @@ locals {
   caller_aws_region = data.aws_region.current.name
 
   #  SAML URL for GEOAxIS Federated Access
-  saml_url_gov  = "https://signin.amazonaws-us-gov.com/saml"
-  saml_url      = "https://signin.aws.amazon.com/saml"
-  saml_url_sgov = "https://signin.sc2shome.sgov.gov/saml"
+  # saml_us_east_1      = "https://signin.aws.amazon.com/saml"
+  # saml_us_gov_west_1  = "https://signin.amazonaws-us-gov.com/saml"
+  # saml_us_isob_east_1 = "https://signin.sc2shome.sgov.gov/saml"
 
-  # region_map = {
-  #   "us-east-1" = {
-  #     "partition" : "aws",
-  #     "saml" : "https://signin.aws.amazon.com/saml"
-  #   },
-  #   "us-gov-west-1" = {
-  #     "partition" : "aws-us-gov",
-  #     "saml" : "https://signin.amazonaws-us-gov.com/saml"
-  #   },
-  #   "us-isob-east-1" = {
-  #     "partition" : "aws-iso-b",
-  #     "saml" : "https://signin.sc2shome.sgov.gov/saml"
-  #   },
-  #   "us-iso-east-1" = {
-  #     "partition" : "aws-iso"
-  #   }
-  # }
+  # https://stackoverflow.com/questions/66803123/terraform-interpolation-of-locals-map-with-key-defined-in-a-variable
+  saml_map = {
+    us_east_1 = {
+      saml = "https://signin.aws.amazon.com/saml"
+    }
+    us_gov_west_1 = {
+      saml = "https://signin.amazonaws-us-gov.com/saml"
+    }
+    us_isob_east_1 = {
+      saml = "https://signin.sc2shome.sgov.gov/saml"
+    }
+  }
+
+  # Conditions
+  nipr_resource      = var.region_partition == "aws" ? true : false
+  gov_cloud_resource = var.region_partition == "aws-us-gov" ? true : false
+  sipr_resource      = var.region_partition == "aws-iso-b" ? true : false
+  jwics_resource     = var.region_partition == "aws-iso" ? true : false
 
 }

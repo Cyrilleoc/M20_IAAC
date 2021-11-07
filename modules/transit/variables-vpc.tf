@@ -130,4 +130,16 @@ variable "tenant_account_id" {
   description = "12 Digit Account ID of the Tenant Account"
 }
 
+variable "cap_account" {
+  type        = string
+  default     = "593664963477" # Adding Pro_User account ID for now
+  description = "Account number for CAP"
+}
+
+variable "region_partition" {
+  type        = string
+  default     = "aws-us-gov"
+  description = "Region Specific Partition"
+}
+
 

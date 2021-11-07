@@ -2,7 +2,7 @@ resource "aws_iam_role" "serv_admin_role" {
   name                 = "SERVADMIN"
   max_session_duration = var.role_timeout_settings
 
-  assume_role_policy = data.aws_iam_policy_document.geoaxis_saml_policy_sgov
+  assume_role_policy = data.aws_iam_policy_document.geoaxis_saml_policy_sgov.json
 
   depends_on = [
     aws_iam_policy.serv_admin_policy
@@ -37,7 +37,7 @@ resource "aws_iam_role" "net_admin_role" {
   name                 = "NETADMIN"
   max_session_duration = var.role_timeout_settings
 
-  assume_role_policy = data.aws_iam_policy_document.geoaxis_saml_policy_sgov
+  assume_role_policy = data.aws_iam_policy_document.geoaxis_saml_policy_sgov.json
 
   depends_on = [
     aws_iam_policy.net_admin_policy
@@ -49,7 +49,7 @@ resource "aws_iam_role" "prov_admin_role" {
   name                 = "PROVADMIN"
   max_session_duration = var.role_timeout_settings
 
-  assume_role_policy = data.aws_iam_policy_document.geoaxis_saml_policy_sgov
+  assume_role_policy = data.aws_iam_policy_document.geoaxis_saml_policy_sgov.json
 
   depends_on = [
     aws_iam_policy.prov_admin_policy
@@ -61,7 +61,7 @@ resource "aws_iam_role" "CNDIS_role" {
   name                 = "CNDIS"
   max_session_duration = var.role_timeout_settings
 
-  assume_role_policy = data.aws_iam_policy_document.geoaxis_saml_policy_sgov
+  assume_role_policy = data.aws_iam_policy_document.geoaxis_saml_policy_sgov.json
 
   depends_on = [
     aws_iam_policy.CNDIS_policy
@@ -73,7 +73,7 @@ resource "aws_iam_role" "CNDIS_readonly_role" {
   name                 = "CNDISREADONLY"
   max_session_duration = var.role_timeout_settings
 
-  assume_role_policy = data.aws_iam_policy_document.geoaxis_saml_policy_sgov
+  assume_role_policy = data.aws_iam_policy_document.geoaxis_saml_policy_sgov.json
 
   depends_on = [
     aws_iam_policy.CNDIS_readonly_policy
@@ -85,7 +85,7 @@ resource "aws_iam_role" "marketplace_role" {
   name                 = "MARKETPLACE"
   max_session_duration = var.role_timeout_settings
 
-  assume_role_policy = data.aws_iam_policy_document.geoaxis_saml_policy_sgov
+  assume_role_policy = data.aws_iam_policy_document.geoaxis_saml_policy_sgov.json
 
   depends_on = [
     aws_iam_policy.marketplace_policy
@@ -97,7 +97,7 @@ resource "aws_iam_role" "business_role" {
   name                 = "BUSINESS"
   max_session_duration = var.role_timeout_settings
 
-  assume_role_policy = data.aws_iam_policy_document.geoaxis_saml_policy_sgov
+  assume_role_policy = data.aws_iam_policy_document.geoaxis_saml_policy_sgov.json
 
   depends_on = [
     aws_iam_policy.business_policy
@@ -109,7 +109,7 @@ resource "aws_iam_role" "tech_readonly_role" {
   name                 = "TECHREADONLY"
   max_session_duration = var.role_timeout_settings
 
-  assume_role_policy = data.aws_iam_policy_document.geoaxis_saml_policy_sgov
+  assume_role_policy = data.aws_iam_policy_document.geoaxis_saml_policy_sgov.json
 
   depends_on = [
     aws_iam_policy.tech_readonly_policy
@@ -121,7 +121,7 @@ resource "aws_iam_role" "proj_admin_role" {
   name                 = "PROJADMIN"
   max_session_duration = var.role_timeout_settings
 
-  assume_role_policy = data.aws_iam_policy_document.geoaxis_saml_policy_sgov
+  assume_role_policy = data.aws_iam_policy_document.geoaxis_saml_policy_sgov.json
 
   depends_on = [
     aws_iam_policy.proj_admin_policy,
@@ -137,7 +137,7 @@ resource "aws_iam_role" "dev_admin_role" {
   name                 = "DEVADMIN"
   max_session_duration = var.role_timeout_settings
 
-  assume_role_policy = data.aws_iam_policy_document.geoaxis_saml_policy_sgov
+  assume_role_policy = data.aws_iam_policy_document.geoaxis_saml_policy_sgov.json
 
   depends_on = [
     aws_iam_policy.dev_admin_policy
@@ -149,7 +149,7 @@ resource "aws_iam_role" "proj_admin_limited_role" {
   name                 = "PROJADMINLIMITED"
   max_session_duration = var.role_timeout_settings
 
-  assume_role_policy = data.aws_iam_policy_document.geoaxis_saml_policy_sgov
+  assume_role_policy = data.aws_iam_policy_document.geoaxis_saml_policy_sgov.json
 
   depends_on = [
     aws_iam_policy.proj_admin_limited_policy
@@ -161,7 +161,7 @@ resource "aws_iam_role" "storage_role" {
   name                 = "STORAGE"
   max_session_duration = var.role_timeout_settings
 
-  assume_role_policy = data.aws_iam_policy_document.geoaxis_saml_policy_sgov
+  assume_role_policy = data.aws_iam_policy_document.geoaxis_saml_policy_sgov.json
 
   depends_on = [
     aws_iam_policy.storage_policy
@@ -173,7 +173,7 @@ resource "aws_iam_role" "database_role" {
   name                 = "DATABASE"
   max_session_duration = var.role_timeout_settings
 
-  assume_role_policy = data.aws_iam_policy_document.geoaxis_saml_policy_sgov
+  assume_role_policy = data.aws_iam_policy_document.geoaxis_saml_policy_sgov.json
 
   depends_on = [
     aws_iam_policy.database_policy
@@ -185,7 +185,7 @@ resource "aws_iam_role" "s3_only_role" {
   name                 = "S3ONLY"
   max_session_duration = var.role_timeout_settings
 
-  assume_role_policy = data.aws_iam_policy_document.geoaxis_saml_policy_sgov
+  assume_role_policy = data.aws_iam_policy_document.geoaxis_saml_policy_sgov.json
 
   depends_on = [
     aws_iam_policy.s3_only_policy
@@ -197,7 +197,7 @@ resource "aws_iam_role" "key_manager_role" {
   name                 = "KEYMANAGER"
   max_session_duration = var.role_timeout_settings
 
-  assume_role_policy = data.aws_iam_policy_document.geoaxis_saml_policy_sgov
+  assume_role_policy = data.aws_iam_policy_document.geoaxis_saml_policy_sgov.json
 
   depends_on = [
     aws_iam_policy.key_manager_policy
@@ -278,7 +278,7 @@ resource "aws_iam_role" "config_manager_role" {
   name                 = "CONFIGMANAGER"
   max_session_duration = var.role_timeout_settings
 
-  assume_role_policy = data.aws_iam_policy_document.geoaxis_saml_policy_sgov
+  assume_role_policy = data.aws_iam_policy_document.geoaxis_saml_policy_sgov.json
 
   depends_on = [
     aws_iam_policy.config_manager_policy
@@ -290,7 +290,7 @@ resource "aws_iam_role" "config_role" {
   name                 = "CONFIG"
   max_session_duration = var.role_timeout_settings
 
-  assume_role_policy = data.aws_iam_policy_document.geoaxis_saml_policy_sgov
+  assume_role_policy = data.aws_iam_policy_document.geoaxis_saml_policy_sgov.json
 
   depends_on = [
     aws_iam_policy.config_policy
@@ -348,7 +348,7 @@ resource "aws_iam_role" "ent_eng_role" {
   name                 = "ENTENG"
   max_session_duration = var.role_timeout_settings
 
-  assume_role_policy = data.aws_iam_policy_document.geoaxis_saml_policy_sgov
+  assume_role_policy = data.aws_iam_policy_document.geoaxis_saml_policy_sgov.json
 
   depends_on = [
     aws_iam_policy.ent_eng_policy
@@ -360,7 +360,7 @@ resource "aws_iam_role" "sec_eng_role" {
   name                 = "SECENG"
   max_session_duration = var.role_timeout_settings
 
-  assume_role_policy = data.aws_iam_policy_document.geoaxis_saml_policy_sgov
+  assume_role_policy = data.aws_iam_policy_document.geoaxis_saml_policy_sgov.json
 
   depends_on = [
     aws_iam_policy.sec_eng_policy
@@ -407,7 +407,7 @@ resource "aws_iam_role" "afc2s_business_role" {
   name                 = "BIZENT"
   max_session_duration = var.role_timeout_settings
 
-  assume_role_policy = data.aws_iam_policy_document.geoaxis_saml_policy_sgov
+  assume_role_policy = data.aws_iam_policy_document.geoaxis_saml_policy_sgov.json
 
   depends_on = [
     aws_iam_policy.ent_business_policy
@@ -421,7 +421,7 @@ resource "aws_iam_role" "ato_admin_sipr_role" {
   name                 = "ATOADMIN"
   max_session_duration = var.role_timeout_settings
 
-  assume_role_policy = data.aws_iam_policy_document.geoaxis_saml_policy_sgov
+  assume_role_policy = data.aws_iam_policy_document.geoaxis_saml_policy_sgov.json
 
   depends_on = [
     aws_iam_policy.ato_admin_policy,

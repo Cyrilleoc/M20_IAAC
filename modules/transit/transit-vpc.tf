@@ -295,12 +295,12 @@ resource "aws_iam_role" "transit_log_role" {
             "logs:PutLogEvents"
           ]
           Effect   = "Allow"
-          Resource = "arn:${local.region_partition}:logs:*:*:*"
+          Resource = "arn:${var.region_partition}:logs:*:*:*"
         },
         {
           Action   = "s3:GetObject"
           Effect   = "Allow"
-          Resource = "arn:${local.region_partition}:s3:::${var.config_bucket}/*"
+          Resource = "arn:${var.region_partition}:s3:::${var.config_bucket}/*"
         }
       ]
     })
@@ -333,7 +333,7 @@ resource "aws_iam_role" "bastion_host_role" {
             "logs:PutLogEvents"
           ]
           Effect   = "Allow"
-          Resource = "arn:${local.region_partition}:logs:*:*:*"
+          Resource = "arn:${var.region_partition}:logs:*:*:*"
         }
       ]
     })
@@ -411,6 +411,73 @@ resource "aws_iam_role" "peer_role" {
       ]
     })
   }
+}
+
+resource "aws_iam_role" "lambda_move_pub_keys_xsit_role" {
+  name                 = "LambdaMovePubKeysXsitRole"
+  max_session_duration = "4600"
+  assume_role_policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Action = "sts:AssumeRole"
+        Effect = "Allow"
+        Principal = {
+          AWS = "arn:${var.region_partition}:iam::${var.tenant_account_id}:root"
+        }
+      },
+    ]
+  })
+  depends_on          = [aws_iam_policy.transit_read_only_policy]
+  managed_policy_arns = ["arn:${var.region_partition}:iam::${local.caller_account_id}:policy/LambdaMovePubKeysXsitPolicy"]
+}
+
+resource "aws_iam_role" "transit_read_only_jwics_role" {
+  count                = local.jwics_resource ? 1 : 0
+  name                 = "TRANSITREADONLY"
+  max_session_duration = "43200"
+  assume_role_policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Sid    = ""
+        Action = "sts:AssumeRole"
+        Effect = "Allow"
+        Principal = {
+          AWS = "arn:${var.region_partition}:iam::${var.cap_account}:root"
+        }
+      },
+    ]
+  })
+  depends_on          = [aws_iam_policy.transit_read_only_policy]
+  managed_policy_arns = ["arn:${var.region_partition}:iam::${local.caller_account_id}:policy/TransitReadOnlyPolicy"]
+}
+
+resource "aws_iam_role" "transit_read_only_sipr_role" {
+  count                = local.sipr_resource ? 1 : 0
+  name                 = "TRANSITREADONLY"
+  max_session_duration = "43200"
+  assume_role_policy   = aws_iam_policy_document.transit_geoaxis_saml_policy.json
+  depends_on           = [aws_iam_policy.transit_read_only_policy]
+  managed_policy_arns  = ["arn:${var.region_partition}:iam::${local.caller_account_id}:policy/TransitReadOnlyPolicy"]
+}
+
+resource "aws_iam_role" "transit_read_only_nipr_role" {
+  count                = local.nipr_resource ? 1 : 0
+  name                 = "TRANSITREADONLY"
+  max_session_duration = "43200"
+  assume_role_policy   = aws_iam_policy_document.transit_geoaxis_saml_policy.json
+  depends_on           = [aws_iam_policy.transit_read_only_policy]
+  managed_policy_arns  = ["arn:${var.region_partition}:iam::${local.caller_account_id}:policy/TransitReadOnlyPolicy"]
+}
+
+resource "aws_iam_role" "transit_read_only_gov_role" {
+  count                = local.gov_cloud_resource ? 1 : 0
+  name                 = "TRANSITREADONLY"
+  max_session_duration = "43200"
+  assume_role_policy   = aws_iam_policy_document.transit_geoaxis_saml_policy.json
+  depends_on           = [aws_iam_policy.transit_read_only_policy]
+  managed_policy_arns  = ["arn:${var.region_partition}:iam::${local.caller_account_id}:policy/TransitReadOnlyPolicy"]
 }
 
 ##### INSTANCE PROFILE
@@ -672,4 +739,61 @@ resource "aws_elb" "elb_proxy" {
     Name        = "ProxyELB"
     Environment = var.environment
   }
+}
+
+#### IAM POLICY
+resource "aws_iam_policy" "lambda_move_pub_keys_xsit_policy" {
+  name = "LambdaMovePubKeysXsitPolicy"
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Sid = "LambdaMovePubKeysS3Access"
+        Action = [
+          "s3:PutObject",
+          "s3:DeleteObject"
+        ]
+        Effect   = "Allow"
+        Resource = "arn:${var.region_partition}:s3:::${var.logs_bucket}/public-keys/*"
+      }
+    ]
+  })
+}
+
+resource "aws_iam_policy" "transit_read_only_policy" {
+  name        = "TransitReadOnlyPolicy"
+  description = "Managed policy for TransitReadOnly permissions."
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Sid = "TransitReadOnlyEC2ELBReadAccess"
+        Action = [
+          "ec2:Describe*",
+          "elasticloadbalancing:Describe*"
+        ]
+        Effect   = "Allow"
+        Resource = "*"
+      },
+      {
+        Sid = "TransitReadOnlyS3ReadAccess"
+        Action = [
+          "s3:ListBucket",
+          "s3:GetBucketLocation"
+        ]
+        Effect   = "Allow"
+        Resource = "arn:${var.region_partition}:s3:::${var.logs_bucket}"
+      },
+      {
+        Sid = "TransitReadOnlyS3WriteAccess"
+        Action = [
+          "s3:PutObject",
+          "s3:GetObject",
+          "s3:DeleteObject"
+        ]
+        Effect   = "Allow"
+        Resource = "arn:${var.region_partition}:s3:::${var.logs_bucket}/public-keys/*"
+      }
+    ]
+  })
 }
