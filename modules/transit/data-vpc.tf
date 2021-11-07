@@ -63,7 +63,7 @@ data "aws_iam_policy_document" "transit_geoaxis_saml_policy" {
     condition {
       test     = "StringEquals"
       variable = "SAML:aud"
-      values   = [local.saml_map[replace(var.region_partition, "-", "_")].saml]
+      values   = [local.saml_map[replace(local.caller_aws_region, "-", "_")].saml]
     }
   }
 }

@@ -457,7 +457,7 @@ resource "aws_iam_role" "transit_read_only_sipr_role" {
   count                = local.sipr_resource ? 1 : 0
   name                 = "TRANSITREADONLY"
   max_session_duration = "43200"
-  assume_role_policy   = aws_iam_policy_document.transit_geoaxis_saml_policy.json
+  assume_role_policy   = data.aws_iam_policy_document.transit_geoaxis_saml_policy.json
   depends_on           = [aws_iam_policy.transit_read_only_policy]
   managed_policy_arns  = ["arn:${var.region_partition}:iam::${local.caller_account_id}:policy/TransitReadOnlyPolicy"]
 }
@@ -466,7 +466,7 @@ resource "aws_iam_role" "transit_read_only_nipr_role" {
   count                = local.nipr_resource ? 1 : 0
   name                 = "TRANSITREADONLY"
   max_session_duration = "43200"
-  assume_role_policy   = aws_iam_policy_document.transit_geoaxis_saml_policy.json
+  assume_role_policy   = data.aws_iam_policy_document.transit_geoaxis_saml_policy.json
   depends_on           = [aws_iam_policy.transit_read_only_policy]
   managed_policy_arns  = ["arn:${var.region_partition}:iam::${local.caller_account_id}:policy/TransitReadOnlyPolicy"]
 }
@@ -475,7 +475,7 @@ resource "aws_iam_role" "transit_read_only_gov_role" {
   count                = local.gov_cloud_resource ? 1 : 0
   name                 = "TRANSITREADONLY"
   max_session_duration = "43200"
-  assume_role_policy   = aws_iam_policy_document.transit_geoaxis_saml_policy.json
+  assume_role_policy   = data.aws_iam_policy_document.transit_geoaxis_saml_policy.json
   depends_on           = [aws_iam_policy.transit_read_only_policy]
   managed_policy_arns  = ["arn:${var.region_partition}:iam::${local.caller_account_id}:policy/TransitReadOnlyPolicy"]
 }

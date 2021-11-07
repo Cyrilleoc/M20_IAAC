@@ -43,22 +43,10 @@ variable "billing_principal" {
   description = "Domain specific principal for billing report delivery"
 }
 
-variable "cap_account" {
-  type        = string
-  default     = "593664963477" # Adding Pro_User account ID for now
-  description = "Account number for CAP federation"
-}
-
 variable "master_payer_account_id" {
   type        = string
   default     = "593664963477" # Adding Pro_User account ID for now
   description = "12 Digit Account ID of the Master Payer Account"
-}
-
-variable "tenant_account_id" {
-  type        = string
-  default     = "123456789012"
-  description = "12 Digit Account ID of the Tenant Account"
 }
 
 variable "elb_principle" {
