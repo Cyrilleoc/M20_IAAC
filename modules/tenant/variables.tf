@@ -83,6 +83,7 @@ variable "vpc_tenancy" {
 
 variable "peer_vpc_account_id" {
   type        = string
+  default     = "593664963477" # Adding Pro_User account ID for now
   description = <<EOT
 Account ID of the Transit VPC owner, taken from the outputs of the Transit
 VPC stack
@@ -90,7 +91,8 @@ EOT
 }
 
 variable "peer_vpc_id" {
-  type        = string
+  type = string
+  # default     = "593664963477" # Add VPC ID of the Transit Account
   description = <<EOT
 VPC ID of the Transit VPC owner, taken from the outputs of the Transit VPC
 stack

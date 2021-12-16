@@ -25,30 +25,26 @@ resource "aws_vpc" "tenant_vpc" {
 
 resource "aws_route_table" "tenant_route_table" {
   vpc_id = aws_vpc.tenant_vpc.id
-
-  # DestinationCidrBlock: !Ref pTransitVPCCIDR
-  # RouteTableId: !Ref rRouteTableMain
-  # VpcPeeringConnectionId: !Ref rVPCPeeringConnection
-
-  # routes not defined as there is transit account is not provisioned yet
-  # route = []
-
-  # route {
-  #   cidr_block = "10.0.1.0/24"
-  #   gateway_id = aws_internet_gateway.example.id
-  # }
-
-
   tags = {
     Name = join(" ", [var.tenant_vpc_name, var.tenant_vpc_environment, "Tenant VPC Route Table"])
   }
 }
 
-# resource "aws_vpc_peering_connection" "vpc_peering_connection" {
-#   peer_owner_id = var.peer_vpc_account_id
-#   peer_vpc_id   = var.peer_vpc_id
-#   vpc_id        = aws_vpc.tenant_vpc.id
-# }
+resource "aws_route" "tenant_peering_route" {
+  route_table_id            = aws_route_table.tenant_route_table.id
+  destination_cidr_block    = "10.0.1.0/24"
+  vpc_peering_connection_id = aws_vpc_peering_connection.vpc_peering_connection.id
+  depends_on                = [aws_route_table.tenant_route_table, aws_vpc_peering_connection.vpc_peering_connection]
+}
+
+resource "aws_vpc_peering_connection" "vpc_peering_connection" {
+  vpc_id        = aws_vpc.tenant_vpc.id
+  peer_vpc_id   = var.peer_vpc_id
+  peer_owner_id = var.peer_vpc_account_id
+  tags = {
+    Name = join(" ", [var.tenant_vpc_name, var.tenant_vpc_environment, "Peer with Transit"])
+  }
+}
 
 resource "aws_vpc_endpoint" "tenant_vpc_endpoint" {
   vpc_id          = aws_vpc.tenant_vpc.id
