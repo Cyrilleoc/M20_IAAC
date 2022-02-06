@@ -23,12 +23,14 @@ variable "availability_zone_a" {
   type = string
   # default = "sidewinder-testing"
   description = "Availability Zone 1"
+  default     = "AZ-1"
 }
 
 variable "availability_zone_b" {
   type = string
   # default = "sidewinder-testing"
   description = "Availability Zone 2"
+  default     = "AZ-2"
 }
 
 variable "logs_bucket" {
@@ -87,6 +89,7 @@ variable "peer_vpc_account_id" {
 Account ID of the Transit VPC owner, taken from the outputs of the Transit
 VPC stack
 EOT
+  default     = "593664963477" # Pro_User account id
 }
 
 variable "peer_vpc_id" {
@@ -95,6 +98,7 @@ variable "peer_vpc_id" {
 VPC ID of the Transit VPC owner, taken from the outputs of the Transit VPC
 stack
 EOT
+  default     = "vpc-0fdeced0d07a18450" # test vpc to peer with
 }
 
 variable "peer_role_arn" {
@@ -120,6 +124,7 @@ variable "transit_vpc_cidr" {
 variable "tenant_vpc_name" {
   type        = string
   description = "Project Name"
+  default     = "tenant-vpc"
 }
 
 variable "tenant_vpc_environment" {
