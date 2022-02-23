@@ -13,7 +13,7 @@ variable "logs_bucket" {
 
 variable "cloudtrail_to_cloudwatch_logs" {
   type        = bool
-  default     = true
+  default     = false
   description = <<EOT
 True if a CloudWatch Logs log group was manually created for CloudTrail
 Logs to be sent to CloudWatch Logs in this account
@@ -38,8 +38,9 @@ variable "billing_bucket" {
 }
 
 variable "billing_principal" {
-  type        = string
-  default     = "386209384616"
+  type    = string
+  default = "593664963477"
+  # default     = "386209384616"
   description = "Domain specific principal for billing report delivery"
 }
 

@@ -17,7 +17,8 @@ resource "aws_s3_bucket_policy" "billing_bucket_policy" {
         Sid    = "BillingAclPolicyCheck20171206"
         Effect = "Allow"
         Resource = [
-          "arn:${local.region_partition}:s3:::${aws_s3_bucket.billing_bucket.arn}"
+          aws_s3_bucket.billing_bucket.arn
+          # "arn:${local.region_partition}:s3:::${aws_s3_bucket.billing_bucket.arn}"
         ]
         Principal = {
           AWS = "arn:${local.region_partition}:iam::${var.billing_principal}:root"
@@ -31,7 +32,7 @@ resource "aws_s3_bucket_policy" "billing_bucket_policy" {
         Sid    = "BillingWrite20171206"
         Effect = "Allow"
         Resource = [
-          "arn:${local.region_partition}:s3:::${aws_s3_bucket.billing_bucket.arn}/*"
+          "${aws_s3_bucket.billing_bucket.arn}/*"
         ]
         Principal = {
           AWS = "arn:${local.region_partition}:iam::${var.billing_principal}:root"

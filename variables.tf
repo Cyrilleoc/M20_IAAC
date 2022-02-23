@@ -107,6 +107,7 @@ variable "peer_role_arn" {
 Complete Amazon Resource Name for the peering role, taken from the outputs
 of the Transit VPC stack
 EOT
+  default = "default-peer-role-arn"
 }
 
 variable "transit_vpc_cidr" {
